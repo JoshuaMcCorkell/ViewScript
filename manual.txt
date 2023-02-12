@@ -1,0 +1,121 @@
+***** ViewScript *****
+
+------------------
+
+Identifiers may have:
+/^[a-zA-Z_][a-zA-Z_1234567890]*$/
+
+------------------
+
+Function declaration and calling is the same as JS, but uses 'fn' rather than "function". Type annotations are optional.
+The & symbol makes the parameter pass by reference rather than value. 
+
+fn myFunction() {
+    log("Hello World!");
+}
+
+myFunction();
+
+fn myFunction2(a: num, &b) {
+    log(b, "was deconsted")
+    b = 0;
+    a + 1
+}
+
+------------------
+
+Declaring a variable with 'const' is equivalent to using "const" in JS.
+
+const constant = 10;
+let variable = 20;
+letiable = 44;
+global const GLOBAL_CONST = 10;
+global let GLOBAL_VAR = 25;
+GLOBAL_VAR += 1;
+
+------------------
+
+If statement syntax is similar to rust: brackets are not necessary, curly braces for a block.
+
+if a == 2 {
+    a += 1;
+} elif b == 4 {
+    b -= 1;
+} else {
+    log("Something");
+}
+
+------------------
+
+Similar to Rust, A value without a semicolon returns the value from the block. 'break `value`' returns a value from a loop.
+All branches of an if statement must return a value, or not return a value.
+The 'return' keyword is only allowed in a function to return.
+
+const x = {
+    a = 1;
+    b = 2;
+    a + b
+}; // x = 3
+
+fn calc(a: num, b: num) {
+    2 + a + (b*3)
+}
+
+const y = calc(1, 2); // y = 9
+
+let i = 1;
+const z = loop {
+    if i == 10 {
+        break i;
+    }
+    i += 1;
+} // z = 10
+
+------------------
+
+For 'for' and 'while' loops that can end without a break statement, a default value or block must be present if assigning with the loop.
+Else statements are allowed in for and while loops and run if the loop is not broken.
+
+const myList = [1, 5, 3, 7];
+
+const x = for i in myList {
+    if i > 5 {
+        break i;
+    }
+} else 5; // x = 7
+
+const y = for i in myList {
+    if i > 10 {
+        break i;
+    }
+} else {
+    if myList.length > {
+        2
+    } else {
+        8
+    }
+};
+
+Branches of if statements or match statements must all return a value, or none return a value. 
+
+------------------
+
+Object Syntax is identical to JS.
+
+const o = {
+    attr1: 5,
+    attr2: "Hello World",
+    getAttr1: fn () {
+        this.attr1
+    }
+}
+
+------------------
+
+Functions can have 'capture-all' parameters. Only for last parameter, argument is now a list of the parameters. 
+Optional parameters have an default value. Madatory parameters must come first.
+
+fn myFunction(a: num, b: num = 1, c[]: str) {
+    a + b + c.collect(add)
+}
+
