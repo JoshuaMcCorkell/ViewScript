@@ -1,4 +1,5 @@
 from enum import StrEnum
+import re
 
 class Operator(StrEnum):
     # Arithmetic Operators
@@ -30,9 +31,9 @@ class Operator(StrEnum):
     BIN_LEFT = "<<"
     BIN_RIGHT = ">>"
     BIN_ZERO_RIGHT = ">>>"
-    BIN_OR = "|"
+    BIN_OR = "||"
     BIN_XOR = "^"
-    BIN_AND = "&"
+    BIN_AND = "&&"
     BIN_NOT = "~"
 
     # Miscellaneous Operators
@@ -144,10 +145,32 @@ class Keyword(StrEnum):
     _VOID = "void"
 
 
+class Delimiter(StrEnum):
+    O_PAREN = "("
+    C_PAREN = ")"
+    O_BRACE = "{"
+    C_BRACE = "}"
+    O_BRACKET = "["
+    C_BRACKET = "]"
+    DOUBLE_QUOTE = '"'
+    SINGLE_QUOTE = "'"
+    LAMBDA_DELIM = "|"
+    REGEX_QUOTE = "`"
 
 
+class Formats:
+    IDENTIFIER_REGEX = re.compile("(?!^_$)^[a-zA-Z_]+\w*$")
+    is_identifier = lambda string: Formats.IDENTIFIER_REGEX.search(string) is not None
 
-if __name__ == "__main__":
-    print(Operator.AND.is_binary)
-    print(Operator.PLUS.is_binary)
-    print(Operator.NOT.is_binary)
+    NUMBER_REGEX = re.compile("^(?!^0.)((((\d+(\.\d+)?)|(\.\d+))([eE][+-]?\d+)?)|(\d+n))$")
+                               
+    is_number = lambda string: Formats.NUMBER_REGEX.search(string) is not None
+    OCTAL_REGEX = re.compile("^0o[0-7]+n?$")
+    is_octal = lambda string: Formats.OCTAL_REGEX.search(string) is not None
+
+    HEX_REGEX = re.compile("^0x[0-9a-fA-F]+n?")
+    is_hex = lambda string: Formats.HEX_REGEX.search(string) is not None
+
+    BINARY_REGEX = re.compile("^0b[01]+n?")
+    is_binary = lambda string: Formats.BINARY_REGEX.search(string) is not None
+

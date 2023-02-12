@@ -8,7 +8,6 @@ Identifiers may have:
 ------------------
 
 Function declaration and calling is the same as JS, but uses 'fn' rather than "function". Type annotations are optional.
-The & symbol makes the parameter pass by reference rather than value. 
 
 fn myFunction() {
     log("Hello World!");
@@ -16,7 +15,7 @@ fn myFunction() {
 
 myFunction();
 
-fn myFunction2(a: num, &b) {
+fn myFunction2(a: number, b) {
     log(b, "was deconsted")
     b = 0;
     a + 1
@@ -57,7 +56,7 @@ const x = {
     a + b
 }; // x = 3
 
-fn calc(a: num, b: num) {
+fn calc(a: number, b: number) {
     2 + a + (b*3)
 }
 
@@ -115,7 +114,17 @@ const o = {
 Functions can have 'capture-all' parameters. Only for last parameter, argument is now a list of the parameters. 
 Optional parameters have an default value. Madatory parameters must come first.
 
-fn myFunction(a: num, b: num = 1, c[]: str) {
+fn myFunction(a: number, b: number = 1, ...c: string) {
     a + b + c.collect(add)
 }
+
+------------------
+
+Lambda syntax:
+
+|x, y: x+y|
+
+|x, y, ...z: {log(x + y); z[2]}|
+
+|element, text: {if element.InnerHTML == text {return "correct"} 2}|
 
