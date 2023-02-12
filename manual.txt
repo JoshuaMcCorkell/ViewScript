@@ -29,8 +29,8 @@ Declaring a variable with 'const' is equivalent to using "const" in JS.
 const constant = 10;
 let variable = 20;
 letiable = 44;
-global const GLOBAL_CONST = 10;
-global let GLOBAL_VAR = 25;
+GLOBAL const GLOBAL_CONST = 10;
+GLOBAL let GLOBAL_VAR = 25;
 GLOBAL_VAR += 1;
 
 ------------------
