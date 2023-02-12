@@ -1,6 +1,7 @@
 from enum import StrEnum
 import re
 
+
 class Operator(StrEnum):
     # Arithmetic Operators
     PLUS = "+"
@@ -51,7 +52,7 @@ class Operator(StrEnum):
             obj._is_binary_ = True
         return obj
 
-    @property 
+    @property
     def is_binary(self):
         return self._is_binary_
 
@@ -162,9 +163,11 @@ class Formats:
     IDENTIFIER_REGEX = re.compile("(?!^_$)^[a-zA-Z_]+\w*$")
     is_identifier = lambda string: Formats.IDENTIFIER_REGEX.search(string) is not None
 
-    NUMBER_REGEX = re.compile("^(?!^0.)((((\d+(\.\d+)?)|(\.\d+))([eE][+-]?\d+)?)|(\d+n))$")
-                               
+    NUMBER_REGEX = re.compile(
+        "^(?!^0.)((((\d+(\.\d+)?)|(\.\d+))([eE][+-]?\d+)?)|(\d+n))$"
+    )
     is_number = lambda string: Formats.NUMBER_REGEX.search(string) is not None
+
     OCTAL_REGEX = re.compile("^0o[0-7]+n?$")
     is_octal = lambda string: Formats.OCTAL_REGEX.search(string) is not None
 
@@ -173,4 +176,3 @@ class Formats:
 
     BINARY_REGEX = re.compile("^0b[01]+n?")
     is_binary = lambda string: Formats.BINARY_REGEX.search(string) is not None
-
