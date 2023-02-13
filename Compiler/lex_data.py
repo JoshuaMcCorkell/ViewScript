@@ -2,6 +2,7 @@ from enum import StrEnum
 import re
 
 
+# An Enum class for defining the available operators in the language.
 class Operator(StrEnum):
     # Arithmetic Operators
     PLUS = "+"
@@ -57,6 +58,9 @@ class Operator(StrEnum):
         return self._is_binary_
 
 
+# An Enum class for defining the available assignment operators in the language. 
+# I've chosen to make this a separate class because assignment operators are 
+# allowed only in special places.
 class AssignmentOperator(StrEnum):
     # Arithmetic Assignment Operators
     ASSIGN = "="
@@ -160,19 +164,20 @@ class Delimiter(StrEnum):
 
 
 class Formats:
-    IDENTIFIER_REGEX = re.compile("(?!^_$)^[a-zA-Z_]+\w*$")
+    IDENTIFIER_REGEX = re.compile(r"(?!^_$)^[a-zA-Z_]+\w*$")
     is_identifier = lambda string: Formats.IDENTIFIER_REGEX.search(string) is not None
 
-    NUMBER_REGEX = re.compile(
-        "^(?!^0.)((((\d+(\.\d+)?)|(\.\d+))([eE][+-]?\d+)?)|(\d+n))$"
-    )
+    NUMBER_REGEX = re.compile(r"^(?!^0[^.eE])((\d+(\.\d*)?)|(\.\d+))([eE][+-]?\d+)?$")
     is_number = lambda string: Formats.NUMBER_REGEX.search(string) is not None
 
-    OCTAL_REGEX = re.compile("^0o[0-7]+n?$")
+    BIGINT_REGEX = re.compile(r"^(0|([1-9]+\d*))n$")
+    is_bigint = lambda string: Formats.BIGINT_REGEX.search(string) is not None
+
+    OCTAL_REGEX = re.compile(r"^0o[0-7]+n?$")
     is_octal = lambda string: Formats.OCTAL_REGEX.search(string) is not None
 
-    HEX_REGEX = re.compile("^0x[0-9a-fA-F]+n?")
+    HEX_REGEX = re.compile(r"^0x[0-9a-fA-F]+n?")
     is_hex = lambda string: Formats.HEX_REGEX.search(string) is not None
 
-    BINARY_REGEX = re.compile("^0b[01]+n?")
+    BINARY_REGEX = re.compile(r"^0b[01]+n?")
     is_binary = lambda string: Formats.BINARY_REGEX.search(string) is not None
