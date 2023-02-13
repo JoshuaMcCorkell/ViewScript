@@ -173,11 +173,11 @@ class Formats:
     BIGINT_REGEX = re.compile(r"^(0|([1-9]+\d*))n$")
     is_bigint = lambda string: Formats.BIGINT_REGEX.search(string) is not None
 
-    OCTAL_REGEX = re.compile(r"^0o[0-7]+n?$")
-    is_octal = lambda string: Formats.OCTAL_REGEX.search(string) is not None
-
-    HEX_REGEX = re.compile(r"^0x[0-9a-fA-F]+n?")
+    HEX_REGEX = re.compile(r"^0[xX][0-9a-fA-F]+n?$")
     is_hex = lambda string: Formats.HEX_REGEX.search(string) is not None
 
-    BINARY_REGEX = re.compile(r"^0b[01]+n?")
+    OCTAL_REGEX = re.compile(r"^0[oO][0-7]+n?$")
+    is_octal = lambda string: Formats.OCTAL_REGEX.search(string) is not None
+
+    BINARY_REGEX = re.compile(r"^0[bB][01]+n?$")
     is_binary = lambda string: Formats.BINARY_REGEX.search(string) is not None
