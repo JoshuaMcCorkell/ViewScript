@@ -40,6 +40,9 @@ class Operator(StrEnum):
 
     # Miscellaneous Operators
     RANGE = ".."
+    INC_RANGE = "..="
+    # TODO range step by
+
     COALESCE = "??"
     IN = "in"
 

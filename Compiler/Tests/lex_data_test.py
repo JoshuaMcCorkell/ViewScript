@@ -89,7 +89,7 @@ def test_hex_regex():
         ("0x24.3", False),
         ("0X5.", False),
         ("0o12", False),
-        ("0b101", False)
+        ("0b101", False),
     ]
     for test, result in hex_tests:
         assert Formats.is_hex(test) == result
@@ -113,7 +113,7 @@ def test_octal_regex():
         ("0o24.3", False),
         ("0o5.", False),
         ("0x12", False),
-        ("0b101", False)
+        ("0b101", False),
     ]
     for test, result in octal_tests:
         assert Formats.is_octal(test) == result
@@ -137,7 +137,7 @@ def test_binary_regex():
         ("0b110.1", False),
         ("0b1.", False),
         ("0x101", False),
-        ("0o103", False)
+        ("0o103", False),
     ]
     for test, result in binary_tests:
         assert Formats.is_binary(test) == result
