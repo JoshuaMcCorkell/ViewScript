@@ -50,6 +50,7 @@ def test_number_regex():
         ("0.0e0", True),
         ("58.e15.", False),
         ("29.25E-19", True),
+        ("45.23e+123", True),
         ("15n", False),
     ]
     for test, result in number_tests:

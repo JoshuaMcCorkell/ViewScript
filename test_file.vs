@@ -1,10 +1,4 @@
-GLOBAL let xh = 2;
-
-fn h(d, a, c) {
-    const j = 2;
-    d
+a = [1, 2, 100, -2, 5, 0.5]
+for i in a step 2 {
+    log(a);
 }
-
-let myLambda = |x: x**2|;
-
-log("Program Finished");

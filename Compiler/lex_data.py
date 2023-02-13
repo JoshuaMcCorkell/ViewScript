@@ -61,8 +61,8 @@ class Operator(StrEnum):
         return self._is_binary_
 
 
-# An Enum class for defining the available assignment operators in the language. 
-# I've chosen to make this a separate class because assignment operators are 
+# An Enum class for defining the available assignment operators in the language.
+# I've chosen to make this a separate class because assignment operators are
 # allowed only in special places.
 class AssignmentOperator(StrEnum):
     # Arithmetic Assignment Operators
@@ -89,7 +89,6 @@ class AssignmentOperator(StrEnum):
 class Keyword(StrEnum):
     # Declarations
     FUNCTION = "fn"
-    LET = "let"
     CONST = "const"
     GLOBAL = "GLOBAL"
 
@@ -111,6 +110,7 @@ class Keyword(StrEnum):
     ELSE = "else"
 
     FOR = "for"
+    STEP = "step"
     WHILE = "while"
     LOOP = "loop"
 
@@ -131,6 +131,7 @@ class Keyword(StrEnum):
     UNDERSCORE = "_"
 
     # Planned Features
+    # TODO Slice Syntax for arrays, Destructuring assignment syntax
     _ARGUMENTS = "arguments"
     _ASYNC = "async"
     _AWAIT = "await"
