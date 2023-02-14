@@ -15,7 +15,7 @@ fn myFunction() {
 
 myFunction();
 
-fn myFunction2(a: number, b) {
+fn myFunction2(a number, b) {
     log(b, "was deconsted")
     b = 0;
     a + 1
@@ -55,11 +55,11 @@ const x = {
     a + b
 }; // x = 3
 
-fn calc(a: number, b: number) {
+fn calc(a number, b number) {
     2 + a + (b*3)
 }
 
-const y = calc(1, 2); // y = 9
+y = calc(1, 2); // y = 9
 
 i = 1;
 const z = loop {
@@ -113,7 +113,7 @@ const o = {
 Functions can have 'capture-all' parameters. Only for last parameter, argument is now a list of the parameters. 
 Optional parameters have an default value. Madatory parameters must come first.
 
-fn myFunction(a: number, b: number = 1, ...c: string) {
+fn myFunction(a number, b number = 1, ...c: string) {
     a + b + c.collect(add)
 }
 
@@ -121,12 +121,10 @@ fn myFunction(a: number, b: number = 1, ...c: string) {
 
 Lambda syntax:
 
-|x, y: x+y|
-
-|x, y, ...z: {log(x + y); z[2]}|
-
-|element, text: {if element.InnerHTML == text {return "correct"} 2}|
-
+const double = #x: 5x;
+const sum = #a, b, c: a + b + c;
+const logAction = #msg, ...args: {log(msg); log("args: ", ...args);};
+const filter = #num, msg: {if num%2 == 0 {return true;} err(msg); false};
 
 
 ------------------

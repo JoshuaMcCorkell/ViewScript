@@ -41,10 +41,30 @@ class Operator(StrEnum):
     # Miscellaneous Operators
     RANGE = ".."
     INC_RANGE = "..="
-    # TODO range step by
-
     COALESCE = "??"
     IN = "in"
+    PATTERN_OR = "|"
+    COLON = ":"
+
+    # Arithmetic Assignment Operators
+    ASSIGN = "="
+    PLUS_ASSIGN = "+="
+    MINUS_ASSIGN = "-="
+    MULT_ASSIGN = "*="
+    DIVIDE_ASSIGN = "/="
+    EXPONENT_ASSIGN = "**="
+    MOD_ASSIGN = "%="
+
+    # Bitwise Assignment Operators
+    BIN_LEFT_ASSIGN = "<<="
+    BIN_RIGHT_ASSIGN = ">>="
+    BIN_ZERO_RIGHT_ASSIGN = ">>>="
+    BIN_OR_ASSIGN = "||="
+    BIN_XOR_ASSIGN = "^="
+    BIN_AND_ASSIGN = "&&="
+
+    # Miscellaneous Assignment Operators
+    COALESCE_ASSIGN = "??="
 
     def __new__(cls, value, *args, **kwargs):
         obj = str.__new__(cls)
@@ -61,36 +81,13 @@ class Operator(StrEnum):
         return self._is_binary_
 
 
-# An Enum class for defining the available assignment operators in the language.
-# I've chosen to make this a separate class because assignment operators are
-# allowed only in special places.
-class AssignmentOperator(StrEnum):
-    # Arithmetic Assignment Operators
-    ASSIGN = "="
-    PLUS = "+="
-    MINUS = "-="
-    MULT = "*="
-    DIVIDE = "/="
-    EXPONENT = "**="
-    MOD = "%="
-
-    # Bitwise Assignment Operators
-    BIN_LEFT = "<<="
-    BIN_RIGHT = ">>="
-    BIN_ZERO_RIGHT = ">>>="
-    BIN_OR = "|="
-    BIN_XOR = "^="
-    BIN_AND = "&="
-
-    # Miscellaneous Assignment Operators
-    COALESCE = "??="
-
 
 class Keyword(StrEnum):
     # Declarations
     FUNCTION = "fn"
     CONST = "const"
     GLOBAL = "GLOBAL"
+    HASH = "#"
 
     # Statements
     DELETE = "del"
@@ -163,7 +160,6 @@ class Delimiter(StrEnum):
     C_BRACKET = "]"
     DOUBLE_QUOTE = '"'
     SINGLE_QUOTE = "'"
-    LAMBDA_DELIM = "|"
     REGEX_QUOTE = "`"
 
 
