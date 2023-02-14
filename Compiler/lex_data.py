@@ -87,7 +87,6 @@ class Keyword(StrEnum):
     FUNCTION = "fn"
     CONST = "const"
     GLOBAL = "GLOBAL"
-    HASH = "#"
 
     # Statements
     DELETE = "del"
@@ -161,6 +160,7 @@ class Delimiter(StrEnum):
     DOUBLE_QUOTE = '"'
     SINGLE_QUOTE = "'"
     REGEX_QUOTE = "`"
+    HASH = "#"
 
 
 class Formats:

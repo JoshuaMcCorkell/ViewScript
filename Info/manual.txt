@@ -126,7 +126,6 @@ const sum = #a, b, c: a + b + c;
 const logAction = #msg, ...args: {log(msg); log("args: ", ...args);};
 const filter = #num, msg: {if num%2 == 0 {return true;} err(msg); false};
 
-
 ------------------
 
 Range Syntax:
@@ -153,3 +152,27 @@ for n in a step 3 {
     log(n);
 }
 // 1, 10, 3
+
+------------------
+
+Constructor functions are denoted by a # after the 'fn':
+
+fn# Position(x number, y number) {
+    this.x = x;
+    this.y = y;
+}
+
+Generator definitions are denoted by a * after the 'fn':
+
+fn* Squares(start number) {
+    num = start;
+    loop {
+        yield num * num;
+        num += 1;
+    }
+}
+
+Both of these should, by convention, start with a capital letter. 
+
+------------------
+
