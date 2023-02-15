@@ -1,0 +1,23 @@
+------------------ ViewScript:
+
+i = 0;
+x = loop {
+    if (i+1)**2 - i**2 > 100 {
+        break i;
+    }
+    i += 1
+};
+log("The smallest n so that (n+1)^2 - n^2 > 100: {x}");
+
+------------------ JavaScript:
+
+let i = 0;
+let x = function () {
+    while (true) {
+        if ((i+1)**2 - i**2 > 100) {
+            return i;
+        }
+        i += 1;
+    }
+}();
+console.log(`The smallest n so that (n+1)^2 - n^2 > 100: ${x}`);

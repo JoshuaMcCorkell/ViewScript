@@ -39,7 +39,7 @@ class Operator(StrEnum):
     BIN_NOT = "~"
 
     # Miscellaneous Operators
-    RANGE = ".."
+    RANGE = ".." # TODO Consider indefinite (lazy evaluated) range: for i in (1..) {}
     INC_RANGE = "..="
     COALESCE = "??"
     IN = "in"
