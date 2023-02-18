@@ -37,7 +37,7 @@ def test_identifier_regex():
         assert Formats.is_identifier(test) == result
 
 
-def test_number_regex():
+def test_float_int_regex():
     number_tests = [
         ("0", True),
         ("1", True),
@@ -69,7 +69,7 @@ def test_number_regex():
         ("15n", False),
     ]
     for test, result in number_tests:
-        assert Formats.is_number(test) == result
+        assert Formats.is_float_int(test) == result
 
 
 def test_bigint_regex():

@@ -88,6 +88,10 @@ class Operator(StrEnum):
             obj._operator_types_ = [OperatorType.BINARY]
         obj._value_ = value
         return obj
+    
+    @classmethod
+    def _missing_(cls, value):
+        return False
 
     @property
     def is_binary(self):
@@ -181,6 +185,10 @@ class Keyword(StrEnum):
     _STATIC = "static"
     _VOID = "void"
 
+    @classmethod
+    def _missing_(cls, value):
+        return False
+
 
 class CodeDelimiter(StrEnum):
     O_PAREN = "("
@@ -189,6 +197,10 @@ class CodeDelimiter(StrEnum):
     C_BRACE = "}"
     O_BRACKET = "["
     C_BRACKET = "]"
+
+    @classmethod
+    def _missing_(cls, value):
+        return False
 
 
 class TextDelimiter(StrEnum):
@@ -200,6 +212,10 @@ class TextDelimiter(StrEnum):
     MULTI_COMMENT_START = "/*"
     MULTI_COMMENT_END = "*/"
 
+    @classmethod
+    def _missing_(cls, value):
+        return False
+
 
 TEMPLATE_ARGUMENT_START = "${"
 TEMPLATE_ARGUMENT_END = "}"
@@ -210,8 +226,8 @@ class Formats:
     IDENTIFIER_REGEX = re.compile(r"(?!^_$)^[a-zA-Z_]+\w*$")
     is_identifier = lambda string: Formats.IDENTIFIER_REGEX.search(string) is not None
 
-    NUMBER_REGEX = re.compile(r"^(?!^0[^.eE])((\d+(\.\d*)?)|(\.\d+))([eE][+-]?\d+)?$")
-    is_number = lambda string: Formats.NUMBER_REGEX.search(string) is not None
+    FLOAT_INT_REGEX = re.compile(r"^(?!^0[^.eE])((\d+(\.\d*)?)|(\.\d+))([eE][+-]?\d+)?$")
+    is_float_int = lambda string: Formats.FLOAT_INT_REGEX.search(string) is not None
 
     BIGINT_REGEX = re.compile(r"^(0|([1-9]+\d*))n$")
     is_bigint = lambda string: Formats.BIGINT_REGEX.search(string) is not None
@@ -225,9 +241,16 @@ class Formats:
     BINARY_REGEX = re.compile(r"^0[bB][01]+n?$")
     is_binary = lambda string: Formats.BINARY_REGEX.search(string) is not None
 
+
+    # NOTE Doesn't work correctly...
     ESCAPE_SEQUENCE_REGEX = re.compile(
         r"^([0'\"\\nrvtbf]|(u[0-9a-fA-F]{4})|u{[0-9a-fA-F]{1,6}}|x[0-9a-fA-F]{2})"
     )
     is_valid_escape_sequence = (
         lambda string: Formats.ESCAPE_SEQUENCE_REGEX.search(string) is not None
     )
+
+    @classmethod
+    def is_number(cls, string: str):
+        return (cls.is_float_int(string) or cls.is_bigint(string) or 
+            cls.is_hex(string) or cls.is_octal(string) or cls.is_binary(string))
