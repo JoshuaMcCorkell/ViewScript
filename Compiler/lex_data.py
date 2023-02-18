@@ -1,12 +1,19 @@
-from enum import StrEnum
+from enum import StrEnum, auto
 import re
+
+
+class OperatorType(StrEnum):
+    PREFIX = auto()
+    POSTFIX = auto()
+    BINARY = auto()
+    ASSIGNMENT = auto()
 
 
 # An Enum class for defining the available operators in the language.
 class Operator(StrEnum):
     # Arithmetic Operators
-    PLUS = "+"
-    MINUS = "-"
+    PLUS = "+", OperatorType.BINARY, OperatorType.PREFIX
+    MINUS = "-", OperatorType.BINARY, OperatorType.PREFIX
     DIVIDE = "/"
     MULT = "*"
     MOD = "%"
@@ -27,7 +34,7 @@ class Operator(StrEnum):
     # Boolean Operators
     AND = "and"
     OR = "or"
-    NOT = "not"
+    NOT = "not", OperatorType.PREFIX
 
     # Bitwise Operators
     BIN_LEFT = "<<"
@@ -36,55 +43,67 @@ class Operator(StrEnum):
     BIN_OR = "||"
     BIN_XOR = "^"
     BIN_AND = "&&"
-    BIN_NOT = "~"
+    BIN_NOT = "~", OperatorType.PREFIX
 
     # Miscellaneous Operators
-    RANGE = ".." # TODO Consider indefinite (lazy evaluated) range: for i in (1..) {}
+    SPREAD = "...", OperatorType.PREFIX
+    RANGE = "..", OperatorType.BINARY, OperatorType.POSTFIX
     INC_RANGE = "..="
     COALESCE = "??"
     IN = "in"
     PATTERN_OR = "|"
     COLON = ":"
 
-    # Arithmetic Assignment Operators
-    ASSIGN = "="
-    PLUS_ASSIGN = "+="
-    MINUS_ASSIGN = "-="
-    MULT_ASSIGN = "*="
-    DIVIDE_ASSIGN = "/="
-    EXPONENT_ASSIGN = "**="
-    MOD_ASSIGN = "%="
+    # Assignment Operators
+    ASSIGN = "=", OperatorType.ASSIGNMENT
+    PLUS_ASSIGN = "+=", OperatorType.ASSIGNMENT
+    MINUS_ASSIGN = "-=", OperatorType.ASSIGNMENT
+    MULT_ASSIGN = "*=", OperatorType.ASSIGNMENT
+    DIVIDE_ASSIGN = "/=", OperatorType.ASSIGNMENT
+    EXPONENT_ASSIGN = "**=", OperatorType.ASSIGNMENT
+    MOD_ASSIGN = "%=", OperatorType.ASSIGNMENT
+    COALESCE_ASSIGN = "??=", OperatorType.ASSIGNMENT
 
     # Bitwise Assignment Operators
-    BIN_LEFT_ASSIGN = "<<="
-    BIN_RIGHT_ASSIGN = ">>="
-    BIN_ZERO_RIGHT_ASSIGN = ">>>="
-    BIN_OR_ASSIGN = "||="
-    BIN_XOR_ASSIGN = "^="
-    BIN_AND_ASSIGN = "&&="
+    BIN_LEFT_ASSIGN = "<<=", OperatorType.ASSIGNMENT
+    BIN_RIGHT_ASSIGN = ">>=", OperatorType.ASSIGNMENT
+    BIN_ZERO_RIGHT_ASSIGN = ">>>=", OperatorType.ASSIGNMENT
+    BIN_OR_ASSIGN = "||=", OperatorType.ASSIGNMENT
+    BIN_XOR_ASSIGN = "^=", OperatorType.ASSIGNMENT
+    BIN_AND_ASSIGN = "&&=", OperatorType.ASSIGNMENT
 
-    # Miscellaneous Assignment Operators
-    COALESCE_ASSIGN = "??="
 
     def __new__(cls, value, *args, **kwargs):
         obj = str.__new__(cls)
-        if value in ["+", "-"]:
-            obj._is_binary_ = None
-        elif value in ["!", "not", "~"]:
-            obj._is_binary_ = False
+        if args:
+            obj._operator_types_ = args
         else:
-            obj._is_binary_ = True
+            obj._operator_types_ = [OperatorType.BINARY]
+        obj._value_ = value
         return obj
 
     @property
     def is_binary(self):
-        return self._is_binary_
+        return OperatorType.BINARY in self._operator_types_
+
+    @property
+    def is_postfix(self):
+        return OperatorType.POSTFIX in self._operator_types_
+    
+    @property
+    def is_prefix(self):
+        return OperatorType.PREFIX in self._operator_types_
+    
+    @property
+    def is_assignment(self):
+        return OperatorType.ASSIGNMENT in self._operator_types_
 
 
 
 class Keyword(StrEnum):
     # Declarations
     FUNCTION = "fn"
+    GENERATOR = "gn"
     CONST = "const"
     GLOBAL = "GLOBAL"
 
@@ -110,9 +129,6 @@ class Keyword(StrEnum):
     WHILE = "while"
     LOOP = "loop"
 
-    SWITCH = "switch"
-    CASE = "case"
-
     # Special Constants
     THIS = "this"
     SUPER = "super"
@@ -125,18 +141,29 @@ class Keyword(StrEnum):
     # Miscellaneous
     DEBUG = "_debug_"
     UNDERSCORE = "_"
+    EXCLAMATION = "!"
+    COMMA = ","
+    FROM = "from"
 
     # Planned Features
     # TODO Slice Syntax for arrays, Destructuring assignment syntax
+    _SWITCH = "switch"
+    _CASE = "case"
+    _MATCH = "match"
+
     _ARGUMENTS = "arguments"
     _ASYNC = "async"
     _AWAIT = "await"
     _ENUM = "enum"
+
     _IMPORT = "import"
     _EXPORT = "export"
 
-    # Reserved (Not in use)
     _CLASS = "class"
+    STATIC = "stat"
+
+
+    # Reserved (Not in use)
     _GOTO = "goto"
     _PACKAGE = "package"
     _DELETE = "delete"
@@ -150,17 +177,28 @@ class Keyword(StrEnum):
     _VOID = "void"
 
 
-class Delimiter(StrEnum):
+class CodeDelimiter(StrEnum):
     O_PAREN = "("
     C_PAREN = ")"
     O_BRACE = "{"
     C_BRACE = "}"
     O_BRACKET = "["
     C_BRACKET = "]"
-    DOUBLE_QUOTE = '"'
-    SINGLE_QUOTE = "'"
-    REGEX_QUOTE = "`"
-    HASH = "#"
+
+
+class TextDelimiter(StrEnum):
+    FORMAT_STRING = '"'
+    PLAIN_STRING = "'"
+    REGEX_STRING = "`"
+    SINGLE_COMMENT = "//"
+    MULTI_COMMENT_START = "/*"
+    MULTI_COMMENT_END = "*/"
+
+
+TEMPLATE_ARGUMENT_START = "${"
+TEMPLATE_ARGUMENT_END = "}"
+REGEX_FLAGS = ["d", "g", "i", "m", "s", "u", "y"]
+
 
 
 class Formats:
@@ -181,3 +219,7 @@ class Formats:
 
     BINARY_REGEX = re.compile(r"^0[bB][01]+n?$")
     is_binary = lambda string: Formats.BINARY_REGEX.search(string) is not None
+
+    ESCAPE_SEQUENCE_REGEX = re.compile(r"^([0'\"\\nrvtbf]|(u[0-9a-fA-F]{4})|u{[0-9a-fA-F]{1,6}}|x[0-9a-fA-F]{2})")
+    is_valid_escape_sequence = lambda string: Formats.ESCAPE_SEQUENCE_REGEX.search(string) is not None
+
