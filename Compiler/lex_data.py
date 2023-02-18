@@ -1,5 +1,13 @@
 from enum import StrEnum, auto
+import string
 import re
+
+
+letters = set(string.ascii_letters + "_")
+digits = set(string.digits)
+reg_chars = letters + digits
+whitespace = set(string.whitespace)
+symbols = set(set(string.printable) - reg_chars - whitespace)
 
 
 class OperatorType(StrEnum):
@@ -72,7 +80,6 @@ class Operator(StrEnum):
     BIN_XOR_ASSIGN = "^=", OperatorType.ASSIGNMENT
     BIN_AND_ASSIGN = "&&=", OperatorType.ASSIGNMENT
 
-
     def __new__(cls, value, *args, **kwargs):
         obj = str.__new__(cls)
         if args:
@@ -89,15 +96,14 @@ class Operator(StrEnum):
     @property
     def is_postfix(self):
         return OperatorType.POSTFIX in self._operator_types_
-    
+
     @property
     def is_prefix(self):
         return OperatorType.PREFIX in self._operator_types_
-    
+
     @property
     def is_assignment(self):
         return OperatorType.ASSIGNMENT in self._operator_types_
-
 
 
 class Keyword(StrEnum):
@@ -162,7 +168,6 @@ class Keyword(StrEnum):
     _CLASS = "class"
     STATIC = "stat"
 
-
     # Reserved (Not in use)
     _GOTO = "goto"
     _PACKAGE = "package"
@@ -190,7 +195,8 @@ class TextDelimiter(StrEnum):
     FORMAT_STRING = '"'
     PLAIN_STRING = "'"
     REGEX_STRING = "`"
-    SINGLE_COMMENT = "//"
+    SINGLE_COMMENT_START = "//"
+    SINGLE_COMMENT_END = "\n"
     MULTI_COMMENT_START = "/*"
     MULTI_COMMENT_END = "*/"
 
@@ -198,7 +204,6 @@ class TextDelimiter(StrEnum):
 TEMPLATE_ARGUMENT_START = "${"
 TEMPLATE_ARGUMENT_END = "}"
 REGEX_FLAGS = ["d", "g", "i", "m", "s", "u", "y"]
-
 
 
 class Formats:
@@ -220,6 +225,9 @@ class Formats:
     BINARY_REGEX = re.compile(r"^0[bB][01]+n?$")
     is_binary = lambda string: Formats.BINARY_REGEX.search(string) is not None
 
-    ESCAPE_SEQUENCE_REGEX = re.compile(r"^([0'\"\\nrvtbf]|(u[0-9a-fA-F]{4})|u{[0-9a-fA-F]{1,6}}|x[0-9a-fA-F]{2})")
-    is_valid_escape_sequence = lambda string: Formats.ESCAPE_SEQUENCE_REGEX.search(string) is not None
-
+    ESCAPE_SEQUENCE_REGEX = re.compile(
+        r"^([0'\"\\nrvtbf]|(u[0-9a-fA-F]{4})|u{[0-9a-fA-F]{1,6}}|x[0-9a-fA-F]{2})"
+    )
+    is_valid_escape_sequence = (
+        lambda string: Formats.ESCAPE_SEQUENCE_REGEX.search(string) is not None
+    )

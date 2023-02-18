@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append("..")
 from lex_data import Formats, Operator
 
@@ -6,10 +7,10 @@ from lex_data import Formats, Operator
 def test_operator_types():
     assert Operator.ASSIGN.is_assignment
     assert Operator.BIN_XOR.is_binary
-    assert (Operator.PLUS.is_binary and Operator.PLUS.is_prefix)
+    assert Operator.PLUS.is_binary and Operator.PLUS.is_prefix
     assert Operator.BIN_OR_ASSIGN.is_assignment
     assert Operator.DOT.is_binary
-    assert (Operator.RANGE.is_binary and Operator.RANGE.is_postfix)
+    assert Operator.RANGE.is_binary and Operator.RANGE.is_postfix
 
     assert not Operator.COALESCE.is_assignment
     assert not Operator.MOD_ASSIGN.is_binary
