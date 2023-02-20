@@ -1,7 +1,8 @@
 import sys
 
 sys.path.append("..")
-from lex_data import Formats, Operator
+import pytest
+from lex_data import *
 
 
 def test_operator_types():
@@ -16,6 +17,30 @@ def test_operator_types():
     assert not Operator.MOD_ASSIGN.is_binary
     assert not Operator.MULT.is_postfix
     assert not (Operator.INC_RANGE.is_prefix or Operator.INC_RANGE.is_postfix)
+
+
+def test_enum_return():
+    with pytest.raises(ValueError):
+        assert not Operator("not_operator")
+    with pytest.raises(ValueError):
+        assert not Keyword("not_a_keyword")
+    with pytest.raises(ValueError):
+        assert not CodeDelimiter("not_code_delimiter")
+    with pytest.raises(ValueError):
+        assert not Comment("not_comment")
+    with pytest.raises(ValueError):
+        assert not StringDelimiter("not_text")
+
+    assert isinstance(Operator("*"), Operator)
+    assert isinstance(Operator("and"), Operator)
+    assert isinstance(Keyword("true"), Keyword)
+    assert isinstance(Keyword("fn"), Keyword)
+    assert isinstance(CodeDelimiter("{"), CodeDelimiter)
+    assert isinstance(CodeDelimiter(")"), CodeDelimiter)
+    assert isinstance(Comment("//"), Comment)
+    assert isinstance(Comment("/*"), Comment)
+    assert isinstance(StringDelimiter("'"), StringDelimiter)
+    assert isinstance(StringDelimiter("`"), StringDelimiter)
 
 
 def test_identifier_regex():

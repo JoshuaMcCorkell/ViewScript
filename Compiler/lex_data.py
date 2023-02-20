@@ -5,9 +5,10 @@ import re
 
 letters = set(string.ascii_letters + "_")
 digits = set(string.digits)
-reg_chars = letters + digits
+reg_chars = letters & digits
 whitespace = set(string.whitespace)
-symbols = set(set(string.printable) - reg_chars - whitespace)
+quote_types = set("'", '"', "`")
+symbols = set(set(string.printable) - reg_chars - whitespace - quote_types)
 
 
 class OperatorType(StrEnum):
@@ -88,10 +89,6 @@ class Operator(StrEnum):
             obj._operator_types_ = [OperatorType.BINARY]
         obj._value_ = value
         return obj
-    
-    @classmethod
-    def _missing_(cls, value):
-        return False
 
     @property
     def is_binary(self):
@@ -185,10 +182,6 @@ class Keyword(StrEnum):
     _STATIC = "static"
     _VOID = "void"
 
-    @classmethod
-    def _missing_(cls, value):
-        return False
-
 
 class CodeDelimiter(StrEnum):
     O_PAREN = "("
@@ -198,23 +191,23 @@ class CodeDelimiter(StrEnum):
     O_BRACKET = "["
     C_BRACKET = "]"
 
-    @classmethod
-    def _missing_(cls, value):
-        return False
 
-
-class TextDelimiter(StrEnum):
+class StringDelimiter(StrEnum):
     FORMAT_STRING = '"'
     PLAIN_STRING = "'"
     REGEX_STRING = "`"
-    SINGLE_COMMENT_START = "//"
-    SINGLE_COMMENT_END = "\n"
-    MULTI_COMMENT_START = "/*"
-    MULTI_COMMENT_END = "*/"
 
-    @classmethod
-    def _missing_(cls, value):
-        return False
+
+class Comment(StrEnum):
+    SINGLE_LINE = "//", "\n"
+    MULTI_LINE = "/*", "*/"
+
+    def __new__(cls, start: str, end: str):
+        obj = str.__new__(cls)
+        obj._value_ = start
+        obj.start = start
+        obj.end = end
+        return obj
 
 
 TEMPLATE_ARGUMENT_START = "${"

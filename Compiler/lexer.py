@@ -3,7 +3,8 @@ from lex_data import (
     OperatorType,
     Keyword,
     CodeDelimiter,
-    TextDelimiter,
+    StringDelimiter,
+    Comment,
     Formats,
     TEMPLATE_ARGUMENT_END,
     TEMPLATE_ARGUMENT_START,
@@ -12,6 +13,7 @@ from lex_data import (
     digits,
     reg_chars,
     whitespace,
+    quote_types,
     symbols,
 )
 from syntax_error import SyntaxError
@@ -73,12 +75,15 @@ def number(chars: CharStream) -> Token:
         char = chars.peak(1)
         if char in reg_chars:
             token += chars.advance_next()
-        elif char in [Operator.PLUS.value, Operator.MINUS.value] and chars.peak(-1) in ["e", "E"]:
-                token += chars.advance_next()
+        elif char in [Operator.PLUS.value, Operator.MINUS.value] and chars.peak(-1) in [
+            "e",
+            "E",
+        ]:
+            token += chars.advance_next()
         else:
             break
     if Formats.is_number(token):
-        return Token(TokenType.NUMBER, token, start, chars.next_index-1)
+        return Token(TokenType.NUMBER, token, start, chars.next_index - 1)
     else:
         raise SyntaxError(f"Invalid Number Literal {token}.")
 
@@ -93,9 +98,9 @@ def word(chars: CharStream) -> Token:
         else:
             break
     end = chars.next_index - 1
-    if Operator(token):
+    if token in set(item.value for item in Operator):
         return Token(TokenType.OPERATOR, Operator(token), start, end)
-    elif Keyword(token):
+    elif token in set(item.value for item in Keyword):
         return Token(TokenType.Keyword, Keyword(token), start, end)
     else:
         return Token(TokenType.IDENTIFIER, token, start, end)
@@ -111,11 +116,11 @@ def symbol(chars: CharStream) -> Token:
         else:
             break
     end = chars.next_index - 1
-    if Operator(token):
+    if token in set(item.value for item in Operator):
         return Token(TokenType.OPERATOR, Operator(token), start, end)
-    elif Keyword(token):
+    elif token in set(item.value for item in Keyword):
         return Token(TokenType.Keyword, Keyword(token), start, end)
-    elif CodeDelimiter(token):
+    elif token in set(item.value for item in CodeDelimiter):
         return Token(TokenType.CODE_DELIMITER, CodeDelimiter(token), start, end)
     else:
         raise SyntaxError(f"Invalid Operator/Symbol {token}.")
@@ -153,8 +158,8 @@ def lex(code: str) -> List[Token]:
             tokens.append(number(chars))
         elif char in reg_chars:
             tokens.append(word(chars))
-        elif TextDelimiter(char) or TextDelimiter(char + chars.peak(1)):
-            tokens.append(text(chars))
+        elif char in quote_types:
+            tokens.append(string(chars))
         elif char in symbols:
             tokens.append(symbol(chars))
         elif char in whitespace:
