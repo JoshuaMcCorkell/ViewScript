@@ -1,0 +1,6 @@
+fn {
+    i = 1;
+    while true {
+        break;
+    }
+}

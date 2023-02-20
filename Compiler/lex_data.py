@@ -1,14 +1,23 @@
-from enum import StrEnum, auto
+from enum import StrEnum, IntEnum, auto
 import string
 import re
 
 
-letters = set(string.ascii_letters + "_")
-digits = set(string.digits)
-reg_chars = letters & digits
-whitespace = set(string.whitespace)
-quote_types = set("'", '"', "`")
-symbols = set(set(string.printable) - reg_chars - whitespace - quote_types)
+class TokenType(IntEnum):
+    OPERATOR = 0
+    KEYWORD = 1
+    CODE_DELIMITER = 2
+    IDENTIFIER = 3
+
+    NUMBER = 10
+    PLAIN_STRING = 11
+    FORMAT_STRING = 12
+    REGEX_STRING = 13
+
+    SINGLE_LINE_COMMENT = 20
+    MULTI_LINE_COMMENT = 21
+
+    ERROR = -1
 
 
 class OperatorType(StrEnum):
@@ -62,6 +71,8 @@ class Operator(StrEnum):
     IN = "in"
     PATTERN_OR = "|"
     COLON = ":"
+    COMMA = ","
+    FROM = "from"
 
     # Assignment Operators
     ASSIGN = "=", OperatorType.ASSIGNMENT
@@ -149,8 +160,6 @@ class Keyword(StrEnum):
     DEBUG = "_debug_"
     UNDERSCORE = "_"
     EXCLAMATION = "!"
-    COMMA = ","
-    FROM = "from"
 
     # Planned Features
     # TODO Slice Syntax for arrays, Destructuring assignment syntax
@@ -190,6 +199,7 @@ class CodeDelimiter(StrEnum):
     C_BRACE = "}"
     O_BRACKET = "["
     C_BRACKET = "]"
+    END_STATEMENT = ";"
 
 
 class StringDelimiter(StrEnum):
@@ -199,14 +209,15 @@ class StringDelimiter(StrEnum):
 
 
 class Comment(StrEnum):
-    SINGLE_LINE = "//", "\n"
-    MULTI_LINE = "/*", "*/"
+    SINGLE_LINE_COMMENT = "//", "\n", TokenType.SINGLE_LINE_COMMENT
+    MULTI_LINE_COMMENT = "/*", "*/", TokenType.MULTI_LINE_COMMENT
 
-    def __new__(cls, start: str, end: str):
+    def __new__(cls, start: str, end: str, token_type: TokenType):
         obj = str.__new__(cls)
         obj._value_ = start
         obj.start = start
         obj.end = end
+        obj.token_type = token_type
         return obj
 
 
@@ -219,7 +230,9 @@ class Formats:
     IDENTIFIER_REGEX = re.compile(r"(?!^_$)^[a-zA-Z_]+\w*$")
     is_identifier = lambda string: Formats.IDENTIFIER_REGEX.search(string) is not None
 
-    FLOAT_INT_REGEX = re.compile(r"^(?!^0[^.eE])((\d+(\.\d*)?)|(\.\d+))([eE][+-]?\d+)?$")
+    FLOAT_INT_REGEX = re.compile(
+        r"^(?!^0[^.eE])((\d+(\.\d*)?)|(\.\d+))([eE][+-]?\d+)?$"
+    )
     is_float_int = lambda string: Formats.FLOAT_INT_REGEX.search(string) is not None
 
     BIGINT_REGEX = re.compile(r"^(0|([1-9]+\d*))n$")
@@ -234,7 +247,6 @@ class Formats:
     BINARY_REGEX = re.compile(r"^0[bB][01]+n?$")
     is_binary = lambda string: Formats.BINARY_REGEX.search(string) is not None
 
-
     # NOTE Doesn't work correctly...
     ESCAPE_SEQUENCE_REGEX = re.compile(
         r"^([0'\"\\nrvtbf]|(u[0-9a-fA-F]{4})|u{[0-9a-fA-F]{1,6}}|x[0-9a-fA-F]{2})"
@@ -245,5 +257,23 @@ class Formats:
 
     @classmethod
     def is_number(cls, string: str):
-        return (cls.is_float_int(string) or cls.is_bigint(string) or 
-            cls.is_hex(string) or cls.is_octal(string) or cls.is_binary(string))
+        return (
+            cls.is_float_int(string)
+            or cls.is_bigint(string)
+            or cls.is_hex(string)
+            or cls.is_octal(string)
+            or cls.is_binary(string)
+        )
+
+
+letters = set(string.ascii_letters + "_")
+digits = set(string.digits)
+reg_chars = letters | digits
+whitespace = set(string.whitespace)
+symbols = set(
+    set(string.printable)
+    - reg_chars
+    - whitespace
+    - set(item.value for item in StringDelimiter)
+)
+escape_char = "\\"
