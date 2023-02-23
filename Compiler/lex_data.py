@@ -123,7 +123,14 @@ class Keyword(StrEnum):
     FUNCTION = "fn"
     GENERATOR = "gn"
     CONST = "const"
+    # TODO let, or whatever, to do variable delcaration without initialization;
     GLOBAL = "GLOBAL"
+
+    # Classes 
+    CLASS = "class"
+    STATIC = "stat"
+    CONSTRUCTOR = "constructor"
+
 
     # Statements
     DELETE = "del"
@@ -175,8 +182,6 @@ class Keyword(StrEnum):
     _IMPORT = "import"
     _EXPORT = "export"
 
-    _CLASS = "class"
-    STATIC = "stat"
 
     # Reserved (Not in use)
     _GOTO = "goto"
@@ -227,7 +232,7 @@ REGEX_FLAGS = ["d", "g", "i", "m", "s", "u", "y"]
 
 
 class Formats:
-    IDENTIFIER_REGEX = re.compile(r"(?!^_$)^[a-zA-Z_]+\w*$")
+    IDENTIFIER_REGEX = re.compile(r"(?!^_$)^#?[a-zA-Z_]+\w*$")
     is_identifier = lambda string: Formats.IDENTIFIER_REGEX.search(string) is not None
 
     FLOAT_INT_REGEX = re.compile(
@@ -266,7 +271,7 @@ class Formats:
         )
 
 
-letters = set(string.ascii_letters + "_")
+letters = set(string.ascii_letters + "_" + "#")
 digits = set(string.digits)
 reg_chars = letters | digits
 whitespace = set(string.whitespace)

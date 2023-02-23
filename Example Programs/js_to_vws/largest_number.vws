@@ -1,0 +1,18 @@
+// program to find the largest among three numbers
+
+// take input from the user
+const num1 = parseFloat(prompt('Enter first number: '));
+const num2 = parseFloat(prompt('Enter second number: '));
+const num2 = parseFloat(prompt('Enter third number: '));
+
+// check the condition
+largest = if num1 >= num2 and num1 >= num3 {
+    num1
+} elif num2 >= num1 and num2 >= num3 {
+    num2
+} else {
+    num3
+}
+
+// display the result
+log("The largest number is {largest}.");

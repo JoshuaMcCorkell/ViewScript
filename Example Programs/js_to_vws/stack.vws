@@ -1,0 +1,59 @@
+// program to implement stack data structure
+class Stack {
+    constructor {
+        this.items = [];
+    }
+    
+    // add element to the stack
+    fn add(element) {
+        this.items.push(element)
+    }
+    
+    // remove element from the stack
+    fn remove() {
+        if this.items.length > 0 {
+            this.items.pop()
+        } else {
+            false
+        }
+    }
+    
+    // view the last element
+    fn peek  {
+        this.items[this.items.length - 1]
+    }
+    
+    // check if the stack is empty
+    fn isEmpty {
+       this.items.length == 0
+    }
+   
+    // the size of the stack
+    fn size {
+        this.items.length
+    }
+ 
+    // empty the stack
+    fn clear {
+        this.items = [];
+    }
+}
+
+stack = new Stack();
+stack.add(1);
+stack.add(2);
+stack.add(4);
+stack.add(8);
+log(stack.items);
+
+stack.remove();
+log(stack.items);
+
+log(stack.peek());
+
+log(stack.isEmpty());
+
+log(stack.size());
+
+stack.clear();
+log(stack.items);
