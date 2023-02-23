@@ -111,7 +111,7 @@ class Lexer:
                     break
             except EOFException:
                 break
-        end = chars.current_index - 1
+        end = chars.current_index 
         if token in set(item.value for item in Operator):
             return Token(TokenType.OPERATOR, Operator(token), line, start, end)
         elif token in set(item.value for item in Keyword):
@@ -135,7 +135,7 @@ class Lexer:
                     break
             except EOFException:
                 break
-        end = chars.current_index - 1
+        end = chars.current_index
         if token in set(item.value for item in Operator):
             return Token(TokenType.OPERATOR, Operator(token), line, start, end)
         elif token in set(item.value for item in Keyword):
@@ -276,7 +276,6 @@ class Lexer:
 def command_line():
     import sys
     code = open(sys.argv[1]).read()
-    print(code)
     print("\n", *Lexer().lex(code_string=code), sep="\n")
 
 
