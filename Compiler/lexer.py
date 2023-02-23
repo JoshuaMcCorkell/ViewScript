@@ -159,7 +159,7 @@ def comment(comment_type: Comment, chars: CharStream) -> Token:
 
 
 def string(chars: CharStream) -> Token:
-    start, line, token = chars.start_token()
+    _, _, token = chars.start_token()
     if token == StringDelimiter.PLAIN_STRING.value:
         return plain_string(chars)
     elif token == StringDelimiter.FORMAT_STRING.value:
@@ -187,7 +187,20 @@ def regex(chars: CharStream) -> Token:
             else:
                 token += chars.advance_next()
         except EOFException:
-            raise SyntaxError("Unterminated Regex Literal", line)
+            raise SyntaxError(f"Unterminated Regex Literal {token}", line)
+    current_regex_flags = []
+    while True:
+        try:
+            char = chars.peak(1)
+            if char in REGEX_FLAGS and char not in current_regex_flags:
+                token += chars.advance_next()
+                current_regex_flags.append(token[-1])
+            elif char in letters:
+                raise SyntaxError(f"Invalid Regex Flags: {current_regex_flags}")
+            else:
+                break     
+        except EOFException:
+            break
     return Token(TokenType.REGEX_STRING, token, line, start, chars.current_index - 1)
 
 
@@ -205,7 +218,7 @@ def plain_string(chars: CharStream) -> Token:
             else:
                 token += chars.advance_next()
         except EOFException:
-            raise SyntaxError("Unterminated Regex Literal", line)
+            raise SyntaxError(f"Unterminated String Literal {token}", line)
     return Token(TokenType.PLAIN_STRING, token, line, start, chars.current_index - 1)
 
 
@@ -255,7 +268,6 @@ def lex(code: str) -> List[Token]:
                 continue
             else:
                 raise SyntaxError(f"Invalid Character {char}", chars.line_number)
-
         return tokens
     except SyntaxError as e:
         tokens.append(e)
