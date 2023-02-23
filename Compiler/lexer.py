@@ -75,6 +75,7 @@ class Token:
 
 def number(chars: CharStream) -> Token:
     start, line, token = chars.start_token()
+    has_dot = (token == ".")
     while True:
         try:
             char = chars.peak(1)
@@ -84,6 +85,9 @@ def number(chars: CharStream) -> Token:
                 -1
             ) in ["e", "E"]:
                 token += chars.advance_next()
+            elif char == "." and not has_dot:
+                token += chars.advance_next()
+                has_dot = True
             else:
                 break
         except EOFException:
@@ -114,8 +118,16 @@ def word(chars: CharStream) -> Token:
         return Token(TokenType.IDENTIFIER, token, line, start, end)
 
 
+def delimiter(chars: CharStream) -> Token:
+    start, line, token = chars.start_token()
+    end = chars.current_index - 1
+    return Token(TokenType.CODE_DELIMITER, CodeDelimiter(token), line, start, end)
+
+
 def symbol(chars: CharStream) -> Token:
     start, line, token = chars.start_token()
+    if token == "." and Formats.is_number((token + chars.peak(1))):
+        return number(chars)
     while True:
         try:
             char = chars.peak(1)
@@ -130,8 +142,6 @@ def symbol(chars: CharStream) -> Token:
         return Token(TokenType.OPERATOR, Operator(token), line, start, end)
     elif token in set(item.value for item in Keyword):
         return Token(TokenType.KEYWORD, Keyword(token), line, start, end)
-    elif token in set(item.value for item in CodeDelimiter):
-        return Token(TokenType.CODE_DELIMITER, CodeDelimiter(token), line, start, end)
     else:
         raise SyntaxError(f"Invalid Operator/Symbol {token}", line)
 
@@ -167,7 +177,10 @@ def regex(chars: CharStream) -> Token:
             if char == StringDelimiter.REGEX_STRING.value:
                 chars.advance_next()
                 break
-            elif char == escape_char and chars.peak(2) == StringDelimiter.REGEX_STRING.value:
+            elif (
+                char == escape_char
+                and chars.peak(2) == StringDelimiter.REGEX_STRING.value
+            ):
                 token += StringDelimiter.REGEX_STRING.value
             elif char == "/":
                 token += "\/"
@@ -175,7 +188,7 @@ def regex(chars: CharStream) -> Token:
                 token += chars.advance_next()
         except EOFException:
             raise SyntaxError("Unterminated Regex Literal", line)
-    return Token(TokenType.REGEX_STRING, token, line, start, chars.current_index-1)
+    return Token(TokenType.REGEX_STRING, token, line, start, chars.current_index - 1)
 
 
 def plain_string(chars: CharStream) -> Token:
@@ -193,7 +206,7 @@ def plain_string(chars: CharStream) -> Token:
                 token += chars.advance_next()
         except EOFException:
             raise SyntaxError("Unterminated Regex Literal", line)
-    return Token(TokenType.PLAIN_STRING, token, line, start, chars.current_index-1)
+    return Token(TokenType.PLAIN_STRING, token, line, start, chars.current_index - 1)
 
 
 def format_string(chars: CharStream) -> Token:
@@ -214,7 +227,7 @@ def lex(code: str) -> List[Token]:
                 char_plus = None
                 char_plus = char + chars.peak(1)
                 char_plus_plus = char_plus + chars.peak(2)
-            except:
+            except EOFException:
                 if char_plus is not None:
                     char_plus_plus = char_plus
                 else:
@@ -229,9 +242,13 @@ def lex(code: str) -> List[Token]:
             elif char_plus in comment_starters:
                 tokens.append(comment(Comment(char + chars.peak(1)), chars))
             elif char_plus_plus in comment_starters:
-                tokens.append(comment(Comment(char + chars.peak(1) + chars.peak(2)), chars))
+                tokens.append(
+                    comment(Comment(char + chars.peak(1) + chars.peak(2)), chars)
+                )
             elif char in reg_chars:
                 tokens.append(word(chars))
+            elif char in [item.value for item in CodeDelimiter]:
+                tokens.append(delimiter(chars))
             elif char in symbols:
                 tokens.append(symbol(chars))
             elif char in whitespace:
@@ -247,6 +264,7 @@ def lex(code: str) -> List[Token]:
 
 if __name__ == "__main__":
     import sys
+
     code = open(sys.argv[1]).read()
     print(code)
     print("\n", *lex(code), sep="\n")

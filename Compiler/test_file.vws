@@ -13,4 +13,4 @@ z = if x > n {
     }
 }
 
-x = `^h(a|e)llo$`
+x = `^h(a|e)llo$`;
