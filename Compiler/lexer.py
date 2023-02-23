@@ -185,7 +185,7 @@ def plain_string(chars: CharStream) -> Token:
         try:
             char = chars.peak(1)
             if char == StringDelimiter.PLAIN_STRING.value:
-                chars.advance_next()
+                token += chars.advance_next()
                 break
             elif char == escape_char:
                 token += chars.advance_next() + chars.advance_next()
