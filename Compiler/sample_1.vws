@@ -1,0 +1,17 @@
+GLOBAL const PI = 3.14156;
+n = 12395n;
+x = 129.23e023;
+h = .2;
+
+z = if x > n {
+    fn {
+        document.getElementById('ID2').innerHTML = 'Hey There';
+    }
+} else {
+    fn {
+        document.getElementById('ID' + x).innerHTML = 'What\'s the time?';
+    }
+}
+
+x = `^h(a|e)llo$`g;
+const l = "Hello {PI} {n} {fn {return x}();}d";

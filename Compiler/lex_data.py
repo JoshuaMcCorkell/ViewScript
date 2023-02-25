@@ -11,7 +11,7 @@ class TokenType(IntEnum):
 
     NUMBER = 10
     PLAIN_STRING = 11
-    FORMAT_STRING = 12
+    TEMPLATE_STRING = 12
     REGEX_STRING = 13
 
     SINGLE_LINE_COMMENT = 20
@@ -126,11 +126,10 @@ class Keyword(StrEnum):
     # TODO let, or whatever, to do variable delcaration without initialization;
     GLOBAL = "GLOBAL"
 
-    # Classes 
+    # Classes
     CLASS = "class"
     STATIC = "stat"
     CONSTRUCTOR = "constructor"
-
 
     # Statements
     DELETE = "del"
@@ -182,7 +181,6 @@ class Keyword(StrEnum):
     _IMPORT = "import"
     _EXPORT = "export"
 
-
     # Reserved (Not in use)
     _GOTO = "goto"
     _PACKAGE = "package"
@@ -208,9 +206,14 @@ class CodeDelimiter(StrEnum):
 
 
 class StringDelimiter(StrEnum):
-    FORMAT_STRING = '"'
+    TEMPLATE_STRING = '"'
     PLAIN_STRING = "'"
     REGEX_STRING = "`"
+
+
+TEMPLATE_ARGUMENT_START = CodeDelimiter.O_BRACE
+TEMPLATE_ARGUMENT_END = CodeDelimiter.C_BRACE
+REGEX_FLAGS = ["d", "g", "i", "m", "s", "u", "y"]
 
 
 class Comment(StrEnum):
@@ -224,11 +227,6 @@ class Comment(StrEnum):
         obj.end = end
         obj.token_type = token_type
         return obj
-
-
-TEMPLATE_ARGUMENT_START = "${"
-TEMPLATE_ARGUMENT_END = "}"
-REGEX_FLAGS = ["d", "g", "i", "m", "s", "u", "y"]
 
 
 class Formats:
